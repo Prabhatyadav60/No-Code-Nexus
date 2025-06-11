@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NoCodeNexus Live AI Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+   
+    tailwind.config = { darkMode: 'class' };
+  </script>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: #1f2937;
+      color: #f9fafb;
+    }
+
+    body.light {
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+
+    iframe {
+      border: none;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .panel-command {
+      background-color: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(6px);
+    }
+
+    .panel-command.dark {
+      background-color: rgba(31, 41, 55, 0.75);
+    }
+
+    .toggle-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0.5rem;
+    }
+  </style>
+</head>
+
+<body class="light relative">
+  <button id="theme-toggle" class="toggle-btn">🌙</button>
+  <div class="flex h-screen">
+  
+    <div class="flex flex-col flex-1 bg-white border-r border-gray-300 p-4">
+      <div class="mb-4 flex justify-between items-center">
+        <h1 class="text-2xl font-semibold">Live Preview</h1>
+        <select id="device-select" class="border rounded px-2 py-1 text-sm bg-white text-gray-800">
+          <option value="100%">Desktop</option>
+          <option value="768px">Tablet</option>
+          <option value="425px">Mobile (Large)</option>
+          <option value="375px">Mobile (Medium)</option>
+          <option value="320px">Mobile (Small)</option>
+        </select>
+      </div>
+      <div class="flex justify-center items-center bg-gray-100 flex-1 overflow-auto rounded-lg border border-gray-200">
+        <iframe id="preview" style="width:100%;height:100%;"
+          srcdoc="<h1 class='text-center mt-20 text-3xl font-bold'>Welcome to NoCodeNexus</h1><p class='text-center mt-2'>Your live site will appear here.</p>"></iframe>
+      </div>
+    </div>
+  
+    <div id="command-panel"
+      class="w-[480px] panel-command dark:panel-command-dark p-6 shadow-lg flex flex-col justify-between border-l border-gray-300 dark:border-gray-600">
+      <div>
+        <h2 class="text-xl font-semibold mb-2">AI Commands</h2>
+        <p class="text-sm mb-4 text-gray-600 dark:text-gray-400">Give commands to modify your site:</p>
+        <div class="mb-6 flex flex-col">
+          <textarea id="command" rows="4" placeholder="e.g. Change title to Hello World"
+            class="w-full border border-gray-300 dark:border-gray-500 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 resize-none"></textarea>
+          <button id="send"
+            class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm font-medium transition">Send</button>
+        </div>
+      
+        <div class="mb-6">
+          <label class="block text-sm mb-2">Upload Image: </label>
+          <input type="file" id="image-upload" accept="image/*" class="w-full mb-2" />
+          <button id="upload-btn"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded text-sm font-medium transition">Upload
+            to Get a live link </button>
+          <p id="image-url" class="mt-2 text-sm break-all text-blue-600"></p>
+          <p>After getting link of your image, you can now copy the secure URL below and paste it into chatbot input and ask it to put it  where you’d like the image to appear.</p>
+        </div>
+      </div>
+      <button id="deploy-btn"
+        class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded text-sm font-semibold transition">🚀
+        Publish</button>
+    </div>
+  </div>
+  <script>
+    // Theme toggle
+    const toggleBtn = document.getElementById('theme-toggle');
+    const root = document.documentElement; const body = document.body; const panel = document.getElementById('command-panel');
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') { root.classList.add('dark'); body.classList.replace('light', 'dark'); panel.classList.add('dark'); toggleBtn.textContent = '☀️'; }
+    toggleBtn.addEventListener('click', () => {
+      if (root.classList.contains('dark')) {
+        root.classList.remove('dark'); body.classList.replace('dark', 'light'); panel.classList.remove('dark'); localStorage.setItem('theme', 'light'); toggleBtn.textContent = '🌙';
+      } else {
+        root.classList.add('dark'); body.classList.replace('light', 'dark'); panel.classList.add('dark'); localStorage.setItem('theme', 'dark'); toggleBtn.textContent = '☀️';
+      }
+    });
+    // ---------------------AI and Deploy logic -----------------------------
+    const preview = document.getElementById('preview'), commandInput = document.getElementById('command'), sendBtn = document.getElementById('send'), deployBtn = document.getElementById('deploy-btn'), deviceSelect = document.getElementById('device-select');
+    let threadId = sessionStorage.getItem('thread_id') || ('thread_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10));
+    sessionStorage.setItem('thread_id', threadId);
+    async function applyAIChange(cmd) { sendBtn.disabled = true; sendBtn.textContent = 'Updating...'; try { const res = await fetch('https://advance-chatbot-fast-api.onrender.com/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: cmd + "return only html page content (html,css,js) only , no other lines of your message describing your additions/modifications, if there is nav bar in the website make sure that all the nav bar links are rediecting in the same page only, but puuting location in their link ", thread_id: threadId }) }); if (!res.ok) throw new Error(await res.text()); const json = await res.json(); preview.srcdoc = json.message || json.response || json.html || ''; } catch (err) { console.error(err); alert('AI update failed due to high traffic,try after some time'); } finally { sendBtn.disabled = false; sendBtn.textContent = 'Send'; } }
+    async function deploySite() { let repoBase = prompt('Enter website name,do not add extra spaces between or after name: Example: My-portfolio'); if (!repoBase) { alert('Publish cancelled.'); return; } const repoName = `${repoBase}-${Date.now()}`; deployBtn.disabled = true; deployBtn.textContent = 'Publishing...'; try { const currentHtml = preview.srcdoc; const chatRes = await fetch('https://advance-chatbot-fast-api.onrender.com/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `Return this as full deployable HTML with doctype, head and body, dont write message from your side , just return html content based on this : \n${currentHtml}`, thread_id: threadId }) }); if (!chatRes.ok) throw new Error(await chatRes.text()); const chatJson = await chatRes.json(); const convertedHtml = chatJson.message || chatJson.response || chatJson.html || ''; const payload = { repoName, html: convertedHtml }; const res = await fetch('https://github-deploy-automation-fast-api.onrender.com/deploy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!res.ok) throw new Error(await res.text()); const data = await res.json(); window.location.href = `published.html?name=${encodeURIComponent(repoName)}&link=${encodeURIComponent(data.url)}`; } catch (err) { console.error(err); alert('❌ Deployment failed: Try Again !'); } finally { deployBtn.disabled = false; deployBtn.textContent = 'Publish'; } }
+    sendBtn.addEventListener('click', () => { const cmd = commandInput.value.trim(); if (cmd) applyAIChange(cmd); });
+    commandInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendBtn.click(); } });
+    deployBtn.addEventListener('click', deploySite);
+    deviceSelect.addEventListener('change', e => { preview.style.width = e.target.value; });
+
+
+    // -------------------Image upload to Cloudinary--------------------------
+    const uploadBtn = document.getElementById('upload-btn'), imageInput = document.getElementById('image-upload'), imageUrlP = document.getElementById('image-url');
+    uploadBtn.addEventListener('click', async () => {
+      const file = imageInput.files[0]; if (!file) { alert('Select an image first'); return; } const formData = new FormData(); formData.append('file', file); formData.append('upload_preset', 'my_unsigned_preset');
+      try {
+        
+        const resp = await fetch('https://api.cloudinary.com/v1_1/doa7uz2ml/image/upload', { method: 'POST', body: formData });
+        const data = await resp.json(); if (data.secure_url) { imageUrlP.textContent = data.secure_url; } else { throw new Error('Upload failed'); }
+      } catch (err) { console.error(err); alert('Image upload failed'); }
+    });
+  </script>
+</body>
+
+</html>

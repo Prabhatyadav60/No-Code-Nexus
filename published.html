@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site Published</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: radial-gradient(circle at center, #0f172a, #1e293b);
+      animation: backgroundShift 10s infinite alternate;
+    }
+    @keyframes backgroundShift {
+      0% { background-position: center; }
+      100% { background-position: bottom right; }
+    }
+    .glow {
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
+    }
+    .celebrate {
+      animation: bounce 2s infinite ease-in-out;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .shine {
+      text-shadow: 0 0 10px #0ff, 0 0 20px #38bdf8, 0 0 40px #0ff;
+      animation: none !important;
+      -webkit-text-fill-color: inherit;
+    }
+  </style>
+</head>
+<body class="text-gray-100 flex flex-col items-center justify-center min-h-screen overflow-hidden relative">
+  <div class="bg-gray-800 shadow-2xl rounded-lg p-8 max-w-md w-full text-center border border-cyan-500">
+    <h1 class="text-3xl font-bold mb-4 glow celebrate">🚀 Site Published Successfully!</h1>
+    <p class="mb-2 text-cyan-300">Website Name: <span id="site-name" class="font-semibold text-white"></span></p>
+    <p class="mb-4 text-cyan-400">Your site will be live at:</p>
+    <a id="site-link" href="#" class="text-cyan-500 underline pointer-events-none opacity-50 transition-all duration-1000 ease-in-out" target="_blank">Loading link...</a>
+    <p class="text-sm text-cyan-200 mt-4">Currently deploying! Will live after <span id="countdown">0:60</span> s.</p>
+  </div>
+
+  <canvas id="confetti-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    function getQueryParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        name: params.get('name') || 'Unknown',
+        link: params.get('link') || '#'
+      };
+    }
+
+    const { name, link } = getQueryParams();
+    const siteNameEl = document.getElementById('site-name');
+    const siteLinkEl = document.getElementById('site-link');
+    const countdownEl = document.getElementById('countdown');
+
+    siteNameEl.textContent = name;
+    siteLinkEl.textContent = link;
+    siteLinkEl.href = link;
+
+ 
+    const duration = 5 * 1000;
+    const end = Date.now() + duration;
+    (function frame() {
+      confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#0ff', '#38bdf8', '#fff'] });
+      confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#0ff', '#38bdf8', '#fff'] });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+
+   
+    let timeLeft = 60;
+    const interval = setInterval(() => {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      timeLeft--;
+      if (timeLeft < 0) {
+        clearInterval(interval);
+      
+        siteLinkEl.classList.remove('pointer-events-none', 'opacity-50');
+        siteLinkEl.classList.add('text-green-400', 'font-bold', 'shine');
+        siteLinkEl.textContent = '🎯 Visit Your Site';
+        // Burst confetti again on unlock
+        for (let i = 0; i < 5; i++) {
+          confetti({
+            particleCount: 20,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#0ff', '#38bdf8', '#fff']
+          });
+        }
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
