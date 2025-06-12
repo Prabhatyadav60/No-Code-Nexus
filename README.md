@@ -65,56 +65,6 @@ NoCodeNexus is an AI-driven, no-code website builder that lets you craft, previe
 
 ---
 
-## ⚙️ Installation & Setup
-
-1. **Clone the repo**
-
-   ```bash
-   git clone https://github.com/NoCodeNexus/NoCodeNexus.git
-   cd NoCodeNexus
-   ```
-
-2. **Create & activate a Python virtual environment**
-
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-
-3. **Install dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configure environment variables**
-   Create a `.env` file in the project root with:
-
-   ```ini
-   OPENAI_API_KEY=your_openai_api_key
-   GITHUB_TOKEN=your_github_personal_access_token
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_UPLOAD_PRESET=your_unsigned_preset
-   ```
-
-5. **Start the FastAPI backends**
-
-   ```bash
-   # In one terminal:
-   uvicorn chatbot_api:app --reload --port 8001
-
-   # In another terminal:
-   uvicorn github_automation_api:app --reload --port 8002
-   ```
-
-6. **Serve the Frontend**
-   Simply open `index.html` (and `viewer.html`) in your browser, or run a static file server:
-
-   ```bash
-   npx http-server . -c-1
-   ```
-
----
 
 ## 🎯 Usage
 
@@ -142,20 +92,20 @@ NoCodeNexus is an AI-driven, no-code website builder that lets you craft, previe
 ## 🤝 Contributing
 
 Contributions are welcome! If you’d like to:
-
 1. Fork the project
 2. Create your feature branch (`git checkout -b feature/foo`)
 3. Commit your changes (`git commit -am 'Add foo feature'`)
 4. Push to the branch (`git push origin feature/foo`)
 5. Open a Pull Request
+6. To understand this repo in better way first visit these two repo
+7. I https://github.com/Prabhatyadav60/advance-chatbot-fast-api
+8. II https://github.com/Prabhatyadav60/Github-deploy-automation-fast-api
+   
+ 
 
 ---
 
-## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
-
----
 
 ## 📬 Contact
 
