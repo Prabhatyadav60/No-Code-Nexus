@@ -204,7 +204,7 @@
         const chatJson = await chatRes.json();
         const convertedHtml = chatJson.message || chatJson.response || chatJson.html || '';
         const payload = { repoName, html: convertedHtml };
-        const res = await fetch('https://github-chatbot-automation.onrender.com/github',
+        const res = await fetch('https://github-chatbot-automation.onrender.com/github/deploy',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
