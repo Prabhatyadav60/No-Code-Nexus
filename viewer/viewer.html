@@ -158,7 +158,7 @@
       sendBtn.disabled = true;
       sendBtn.textContent = 'Updating...';
       try {
-        const res = await fetch('http://localhost:8000/chatbot/chat', {
+        const res = await fetch('https://github-chatbot-automation.onrender.com/chatbot/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -192,7 +192,7 @@
       deployBtn.textContent = 'Publishing...';
       try {
         const currentHtml = preview.srcdoc;
-        const chatRes = await fetch('http://localhost:8000/chatbot/chat', {
+        const chatRes = await fetch('https://github-chatbot-automation.onrender.com/chatbot/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -204,7 +204,7 @@
         const chatJson = await chatRes.json();
         const convertedHtml = chatJson.message || chatJson.response || chatJson.html || '';
         const payload = { repoName, html: convertedHtml };
-        const res = await fetch('https://github-automation-80bf.onrender.com/deploy',
+        const res = await fetch('https://github-chatbot-automation.onrender.com/github',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -296,4 +296,3 @@
   </script>
 </body>
 </html>
-
