@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoCodeNexus — Flow Explanation</title>
+  <link rel="stylesheet" href="./frontend/styles.css">
+  <link rel="icon" href="./images/galaxy.png" type="image" />
+  <style>
+    :root {
+      --bg-color: #0b0f1f;
+      --primary-color: #ffffff;
+      --secondary-color: #aab2c1;
+      --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --gap: 1rem;
+      --radius: 8px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg-color);
+      color: var(--primary-color);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+    }
+    .site-header {
+      background: rgba(255,255,255,0.05);
+      padding: var(--gap) 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .site-header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1000px;
+      margin: auto;
+      padding: 0 var(--gap);
+    }
+    .logo { font-size: 1.5rem; color: var(--primary-color); }
+    .nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+    }
+    .nav a {
+      color: var(--primary-color);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--primary-color);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+    }
+    .nav a.btn-outline {
+      background: transparent;
+    }
+    .nav-toggle { display: none; }
+    .card-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem var(--gap);
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: var(--radius);
+      padding: calc(var(--gap) * 2);
+      max-width: 800px;
+      text-align: left;
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      margin-bottom: var(--gap);
+    }
+    .card p {
+      font-size: 1rem;
+      color: var(--secondary-color);
+      line-height: 1.6;
+      margin-bottom: var(--gap);
+    }
+    @media (max-width: 600px) {
+      .nav ul { display: none; }
+      .nav-toggle { display: block; background: none; border: none; color: var(--primary-color); font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="site-header">
+    <div class="container">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <img src="./images/galaxy.png" alt="Galaxy Logo" style="width:32px; height:32px;" />
+        <h1 class="logo">NoCodeNexus</h1>
+      </div>
+      <nav class="nav">
+      <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="../viewer/viewer.html" class="btn-outline">Try Now</a></li>
+          <li><a href="working.html">Working of NoCodeNexus</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle">☰</button>
+    </div>
+  </header>
+
+  <!-- Flow Explanation Card -->
+  <div class="card-wrapper">
+    <div class="card">
+      <img src="/images/Working.png" alt="NoCodeNexus Workflow Diagram" />
+      <p>1. User enters a design or content prompt in <code>viewer.html</code>, which is sent to the Chatbot FastAPI endpoint.</p>
+      <p>2. Advanced prompt engineering techniques refine the input before LangChain and LangGraph call the <code>website_builder</code> tool to generate modular HTML, CSS, and JavaScript patches while maintaining conversation state.</p>
+      <p>3. Incremental code updates are streamed back to the frontend and injected into the live preview pane within 7–15 seconds.</p>
+      <p>4. Image uploads are handled via unsigned Cloudinary endpoints, returning secure CDN URLs that can be embedded directly into the site.</p>
+      <p>5. Upon clicking “Publish,” the frontend bundles the current code and invokes the GitHub Automation FastAPI with a personal access token to create a CI/CD pipeline.</p>
+      <p>6. The pipeline automatically creates a GitHub repository, commits the build, enables GitHub Pages on the default branch, and returns the live URL in under one minute.</p>
+    </div>
+  </div>
+
+  <script src="./frontend/script.js"></script>
+</body>
+</html>
